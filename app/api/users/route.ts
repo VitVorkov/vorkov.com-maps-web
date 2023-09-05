@@ -5,11 +5,9 @@ export const GET = withApiAuthRequired(async function GET(req) {
   const res = new NextResponse();
   const { accessToken } = await getAccessToken(req, res);
 
-  console.log("accessToken:", accessToken);
-
   const url = `${
     process.env.NEXT_PUBLIC_BACKEND_URL
-  }/users/auth?email=${req.nextUrl.searchParams.get("email")}`;
+  }/users?email=${req.nextUrl.searchParams.get("email")}`;
   const response = await fetch(url, {
     cache: "no-store",
     headers: {

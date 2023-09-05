@@ -1,6 +1,6 @@
 "use client";
 
-import { MouseEvent, useRef } from "react";
+import { MouseEvent, useRef, useEffect, useState } from "react";
 import * as ChartGeo from "chartjs-chart-geo";
 import {
   Chart as ChartJS,
@@ -88,49 +88,74 @@ export const config: ChartConfiguration<"choropleth"> = {
 
 export default function Home() {
   const chartRef = useRef<ChartJS<"choropleth">>(null);
+  const [countriesCounter, setCountriesCounter] = useState(0);
   const { user, error, isLoading } = useUser();
   if (error) return <div>{error.message}</div>;
+
+  useEffect(() => {
+    const getCountries = async () => {
+      if (!user?.email) return;
+      await fetch(`api/users?email=${user?.email}`);
+
+      const { current: chart } = chartRef;
+
+      if (!chart) return;
+
+      const response = await fetch(`api/countries/all?email=${user?.email}`);
+      const dataResponse = await response.json();
+
+      setCountriesCounter(dataResponse.length);
+
+      for (const item of dataResponse) {
+        if (data.labels?.find((e) => e === item.name)) {
+          const countryIndex = data.labels.indexOf(item.name);
+          data.datasets[0].data[countryIndex].value = CountryStatus.VISITED;
+        }
+        chart.update();
+      }
+    };
+    getCountries();
+  }, [user]);
 
   const changeCountryStatus = (element: InteractionItem[]) => {
     if (!element.length || !data.labels) return;
     const { datasetIndex, index } = element[0];
 
-    data.datasets[datasetIndex].data[index].value =
+    if (
       data.datasets[datasetIndex].data[index].value === CountryStatus.VISITED
-        ? CountryStatus.NOT_VISITED
-        : CountryStatus.VISITED;
+    ) {
+      data.datasets[datasetIndex].data[index].value = CountryStatus.NOT_VISITED;
+      setCountriesCounter(countriesCounter - 1);
+    } else {
+      data.datasets[datasetIndex].data[index].value = CountryStatus.VISITED;
+      setCountriesCounter(countriesCounter + 1);
+    }
+  };
+
+  const updateVisitedCountries = async (element: InteractionItem[]) => {
+    if (!element.length || !data.labels || !user?.email) return;
+    const { index } = element[0];
+
+    await fetch(
+      `api/countries/update?email=${user.email}&country=${data.labels[index]}`
+    );
   };
 
   const onClick = (event: MouseEvent<HTMLCanvasElement>) => {
     const { current: chart } = chartRef;
+    if (!chart) return;
 
-    if (!chart) {
-      return;
-    }
     changeCountryStatus(getElementAtEvent(chart, event));
+    updateVisitedCountries(getElementAtEvent(chart, event));
 
     chart.update();
-  };
-
-  const testGetUser = async () => {
-    const userEmail = user?.email ? user.email : "test@email.com";
-    const response = await fetch(`api/user?name=${userEmail}`);
-    const data = await response.json();
-    console.log(data);
-  };
-
-  const testGetUserAuth = async () => {
-    const userEmail = user?.email ? user.email : "test@email.com";
-    const response = await fetch(`api/user-auth?email=${userEmail}`);
-    const data = await response.json();
-    console.log(data);
   };
 
   return (
     <main className="flex min-h-screen flex-col items-center">
       {isLoading && <div>Loading...</div>}
       {!user && !isLoading && (
-        <div>
+        <div className="text-center">
           You can{" "}
           <a href="/api/auth/login" className="underline">
             login in
@@ -139,13 +164,15 @@ export default function Home() {
         </div>
       )}
       {user && !isLoading && (
-        <div>
+        <div className="text-center">
           You are logged in as {user.email}.{" "}
           <a href="/api/auth/logout" className="underline">
             Logout.
           </a>
+          <div>You have visited {countriesCounter} countries</div>
         </div>
       )}
+
       <div>
         <Chart
           ref={chartRef}
@@ -157,8 +184,6 @@ export default function Home() {
           onClick={onClick}
         ></Chart>
       </div>
-      <button onClick={testGetUser}>TestGetUser</button>
-      <button onClick={testGetUserAuth}>TextGetUserAuth</button>
     </main>
   );
 }
