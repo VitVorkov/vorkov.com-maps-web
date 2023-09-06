@@ -58,6 +58,7 @@ export default function Home() {
       }
     };
     getCountries();
+    testUserNoAuth();
   }, [user]);
 
   const changeCountryStatus = (element: InteractionItem[]) => {
@@ -141,7 +142,6 @@ export default function Home() {
           ></Chart>
         </div>
       )}
-      <button onClick={testUserNoAuth}>Test User No Auth</button>
     </main>
   );
 }
