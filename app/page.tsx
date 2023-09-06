@@ -110,7 +110,7 @@ export default function Home() {
           <div>You have visited {countriesCounter} countries</div>
         </div>
       )}
-      <div className="w-[1200px]">
+      <div className="w-[80%]">
         <Chart
           ref={chartRef}
           type="choropleth"
