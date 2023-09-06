@@ -12,7 +12,7 @@ import {
 import { Chart, getElementAtEvent } from "react-chartjs-2";
 import { CountryStatus } from "./enums";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { data, config } from "./maps/us-map";
+import { data, config } from "./maps/world-map";
 
 ChartJS.register(
   Legend,
@@ -90,10 +90,10 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center">
+    <main className="flex min-h-screen flex-col items-center h-screen">
       {isLoading && <div>Loading...</div>}
       {!user && !isLoading && (
-        <div className="text-center">
+        <div className="text-center h-[15%] justify-center align-middle flex">
           You can{" "}
           <a href="/api/auth/login" className="underline">
             login in
@@ -102,23 +102,28 @@ export default function Home() {
         </div>
       )}
       {user && !isLoading && (
-        <div className="text-center">
-          You are logged in as {user.email}.{" "}
-          <a href="/api/auth/logout" className="underline">
-            Logout.
-          </a>
+        <div className="text-center h-[15%] justify-center align-middle flex flex-col">
+          <div>
+            You are logged in as {user.email}.{" "}
+            <a href="/api/auth/logout" className="underline">
+              Logout.
+            </a>
+          </div>
           <div>You have visited {countriesCounter} countries</div>
         </div>
       )}
-      <div className="w-[80%]">
-        <Chart
-          ref={chartRef}
-          type="choropleth"
-          data={config.data}
-          options={config.options}
-          onClick={onClick}
-        ></Chart>
-      </div>
+      {!isLoading && (
+        <div className="w-[85%] h-[80%]">
+          <Chart
+            className="bg-slate-500 rounded-2xl h-auto min-h-min"
+            ref={chartRef}
+            type="choropleth"
+            data={config.data}
+            options={config.options}
+            onClick={onClick}
+          ></Chart>
+        </div>
+      )}
     </main>
   );
 }
