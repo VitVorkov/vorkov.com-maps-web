@@ -8,6 +8,7 @@ export const GET = withApiAuthRequired(async function GET(req) {
   const url = `${
     process.env.NEXT_PUBLIC_BACKEND_URL
   }/users?email=${req.nextUrl.searchParams.get("email")}`;
+  console.log(url);
   const response = await fetch(url, {
     cache: "no-store",
     headers: {
@@ -15,5 +16,6 @@ export const GET = withApiAuthRequired(async function GET(req) {
     },
   });
   const user = await response.json();
+  console.log(user);
   return NextResponse.json(user, { status: 200 });
 });
