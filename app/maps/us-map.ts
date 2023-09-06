@@ -43,7 +43,16 @@ export const config: ChartConfiguration<"choropleth"> = {
         display: false,
       },
       tooltip: {
-        enabled: false,
+        enabled: true,
+        displayColors: false,
+        callbacks: {
+          label: function (context) {
+            let label =
+              context.dataset.data[context.dataIndex].feature.properties
+                ?.name || "";
+            return label;
+          },
+        },
       },
     },
     scales: {
