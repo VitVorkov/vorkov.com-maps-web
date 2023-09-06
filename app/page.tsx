@@ -97,8 +97,7 @@ export default function Home() {
 
   const testUserNoAuth = async () => {
     const res = await fetch(
-      process.env.NEXT_PUBLIC_NEXT_URL +
-        `/api/users-no-auth?email=vitvorkov@gmail.com`
+      process.env.NEXT_PUBLIC_NEXT_URL + `/api/users-no-auth`
     );
 
     const dataResponse = await res.json();
