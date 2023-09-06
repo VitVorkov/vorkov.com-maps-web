@@ -1,11 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export const GET = async function GET(req: NextRequest) {
+export const GET = async function GET() {
   const res = new NextResponse();
 
-  const url = `${
-    process.env.NEXT_PUBLIC_BACKEND_URL
-  }/users/no-auth?email=${req.nextUrl.searchParams.get("email")}`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/no-auth`;
   const response = await fetch(url, {
     cache: "no-store",
   });
