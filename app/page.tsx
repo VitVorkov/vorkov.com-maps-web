@@ -33,7 +33,9 @@ export default function Home() {
   useEffect(() => {
     const getCountries = async () => {
       if (!user?.email) return;
-      await fetch(`api/users?email=${user?.email}`);
+      await fetch(
+        process.env.NEXT_PUBLIC_NEXT_URL + `/api/users?email=${user?.email}`
+      );
 
       const { current: chart } = chartRef;
 
