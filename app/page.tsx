@@ -58,7 +58,6 @@ export default function Home() {
       }
     };
     getCountries();
-    testUserNoAuth();
   }, [user]);
 
   const changeCountryStatus = (element: InteractionItem[]) => {
@@ -94,15 +93,6 @@ export default function Home() {
     updateVisitedCountries(getElementAtEvent(chart, event));
 
     chart.update();
-  };
-
-  const testUserNoAuth = async () => {
-    const res = await fetch(
-      process.env.NEXT_PUBLIC_NEXT_URL + `/api/users-no-auth`
-    );
-
-    const dataResponse = await res.json();
-    console.log(dataResponse);
   };
 
   return (
