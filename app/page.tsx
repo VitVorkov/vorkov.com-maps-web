@@ -6,27 +6,13 @@ import {
   Chart as ChartJS,
   Legend,
   Tooltip,
-  ChartConfiguration,
   CategoryScale,
   InteractionItem,
 } from "chart.js";
 import { Chart, getElementAtEvent } from "react-chartjs-2";
-import states10m from "../public/states-10m.json";
 import { CountryStatus } from "./enums";
 import { useUser } from "@auth0/nextjs-auth0/client";
-
-const mapNation = (
-  ChartGeo.topojson.feature(
-    states10m as any,
-    states10m.objects.nation as any
-  ) as ChartGeo.Feature
-).features[0];
-const mapStates = (
-  ChartGeo.topojson.feature(
-    states10m as any,
-    states10m.objects.states as any
-  ) as ChartGeo.Feature
-).features;
+import { data, config } from "./maps/us-map";
 
 ChartJS.register(
   Legend,
@@ -37,54 +23,6 @@ ChartJS.register(
   ChartGeo.ColorScale,
   ChartGeo.GeoFeature
 );
-
-const labels = mapStates.map(
-  (d: { properties: { name: any } }) => d.properties.name
-);
-
-export const data: ChartConfiguration<"choropleth">["data"] = {
-  labels,
-  datasets: [
-    {
-      label: "United States",
-      outline: mapNation,
-      data: mapStates.map((d: any) => ({
-        feature: d,
-        value: CountryStatus.NOT_VISITED,
-      })),
-    },
-  ],
-};
-
-export const config: ChartConfiguration<"choropleth"> = {
-  type: "choropleth",
-  data,
-  options: {
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        enabled: false,
-      },
-    },
-    scales: {
-      projection: {
-        axis: "x",
-        projection: "albersUsa",
-      },
-      color: {
-        display: false,
-        axis: "x",
-        quantize: 5,
-        legend: {
-          position: "bottom-right",
-          align: "right",
-        },
-      },
-    },
-  },
-};
 
 export default function Home() {
   const chartRef = useRef<ChartJS<"choropleth">>(null);
@@ -172,15 +110,12 @@ export default function Home() {
           <div>You have visited {countriesCounter} countries</div>
         </div>
       )}
-
-      <div>
+      <div className="w-[1200px]">
         <Chart
           ref={chartRef}
           type="choropleth"
           data={config.data}
           options={config.options}
-          width={600}
-          height={500}
           onClick={onClick}
         ></Chart>
       </div>
