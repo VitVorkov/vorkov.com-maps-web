@@ -95,6 +95,16 @@ export default function Home() {
     chart.update();
   };
 
+  const testUserNoAuth = async () => {
+    const res = await fetch(
+      process.env.NEXT_PUBLIC_NEXT_URL +
+        `/api/users-no-auth?email=vitvorkov@gmail.com`
+    );
+
+    const dataResponse = await res.json();
+    console.log(dataResponse);
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center h-screen">
       {isLoading && <div>Loading...</div>}
@@ -132,6 +142,7 @@ export default function Home() {
           ></Chart>
         </div>
       )}
+      <button onClick={testUserNoAuth}>Test User No Auth</button>
     </main>
   );
 }
