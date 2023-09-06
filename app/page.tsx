@@ -93,12 +93,14 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center h-screen">
       {isLoading && <div>Loading...</div>}
       {!user && !isLoading && (
-        <div className="text-center h-[15%] justify-center align-middle flex">
-          You can{" "}
-          <a href="/api/auth/login" className="underline">
-            login in
-          </a>{" "}
-          to save visited countries on the map.
+        <div className="text-center h-[15%] justify-center align-middle flex flex-col">
+          <div>
+            You can{" "}
+            <a href="/api/auth/login" className="underline">
+              login in
+            </a>{" "}
+            to save visited countries on the map.
+          </div>
         </div>
       )}
       {user && !isLoading && (
