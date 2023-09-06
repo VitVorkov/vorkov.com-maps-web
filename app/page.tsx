@@ -39,7 +39,10 @@ export default function Home() {
 
       if (!chart) return;
 
-      const response = await fetch(`api/countries/all?email=${user?.email}`);
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_NEXT_URL +
+          `/api/countries/all?email=${user?.email}`
+      );
       const dataResponse = await response.json();
 
       setCountriesCounter(dataResponse.length);
@@ -75,7 +78,8 @@ export default function Home() {
     const { index } = element[0];
 
     await fetch(
-      `api/countries/update?email=${user.email}&country=${data.labels[index]}`
+      process.env.NEXT_PUBLIC_NEXT_URL +
+        `/api/countries/update?email=${user.email}&country=${data.labels[index]}`
     );
   };
 
